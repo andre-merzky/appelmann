@@ -1,18 +1,18 @@
 
-#include </software/include/pvm3.h>
+#include <pvm3.h>
 #include <stdio.h>
 #include <time.h>
-#include </usr/include/sys/unistd.h>
-#include </usr/include/sys/times.h>
-#include </usr/include/sys/timeb.h>
-#include </usr/include/X11R4/X11/Xlib.h>
-#include </usr/include/X11R4/X11/Xatom.h>
-#include </usr/include/X11R4/X11/Xutil.h>
+#include </usr/include/unistd.h>
+#include </usr/include/linux/times.h>
+#include </usr/include/x86_64-linux-gnu/sys/timeb.h>
+#include </usr/include/X11/Xlib.h>
+#include </usr/include/X11/Xatom.h>
+#include </usr/include/X11/Xutil.h>
 
 #define maxmaxx 2000
 
 char hello[]=("Appelmann-Window.     (Press 'Q' to make me disappear ! :-)");
-char test[10]'
+char text[10];
 char host[]=("hpboot2:0");
 
 extern GC XCreateGC();
@@ -48,15 +48,15 @@ long pixels[256];
 Display *mydisp;
 GC mygc;
 
-int test,q,h,i,j,x,color,k,bufid,oldbufid;
-int my_tid,line,masterid,maxtid;
+int q,h,i,j,x,color,k,bufid,oldbufid;
+int mytid,line,masterid,maxtid;
 float border,dx,dy,dn,z,z1,z2,c1,c2,u1,u2,max,y1,y2,x1,x2,may;
-int maxx, maxy;
+int maxx,maxy;
 int colors[maxmaxx+1];
 unsigned long mywin,mypix;
 
 int pvm_init(){
-        my_tid=pvm_mytid();
+        mytid=pvm_mytid();
         bufid=pvm_recv(-1,1);             /*erste message vom master...*/
 
         pvm_upkulong(&mywin, 1, 1);
@@ -85,8 +85,8 @@ int fensterln(){
         myforegr=WhitePixel(mydisp,myscreen);
         cmap=DefaultColormap(mydisp,DefaultScreen(mydisp));
 
-        mycg=XCreateCG(mydisp,mywin,0,0);
-        mycg=XCreateCG(mydisp,mypix,0,0);
+        mygc=XCreateGC(mydisp,mywin,0,0);
+        mygc=XCreateGC(mydisp,mypix,0,0);
 
         XFlush(mydisp);
 
@@ -156,7 +156,7 @@ int colorinit(){
 
 int pvm_which_line(){
 
-        bufid=pvm_recv(masterid,2)  /*zweite message vom master...*/
+        bufid=pvm_recv(masterid,2);  /*zweite message vom master...*/
         pvm_upkint(&line,1,1);
         return(1);
         }

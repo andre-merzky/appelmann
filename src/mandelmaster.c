@@ -1,11 +1,11 @@
 
-#include </software/include/pvm3.h>
+#include <pvm3.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include </usr/include/X11R4/X11/Xlib.h>
-#include </usr/include/X11R4/X11/Xatom.h>
-#include </usr/include/X11R4/X11/Xutil.h>
+#include </usr/include/X11/Xlib.h>
+#include </usr/include/X11/Xatom.h>
+#include </usr/include/X11/Xutil.h>
 
 
 /* (x1,y1) rechte obere Ecke
@@ -22,23 +22,23 @@
 #define y1 0.35         /*0.315         1.2             -0.35           0.35*/
 #define y2 0.3          /*0.309         -2.2            -0.40           0.3*/
 
-#define host1 "hpcli51"
-#define host2 "hpcli52"
-#define host3 "hpcli53"
-#define host4 "hpcli51"
-#define host5 "hpcli52"
-#define host6 "hpcli53"
-#define host7 "hpcli51"
-#define host8 "hpcli52"
-#define host9 "hpcli53"
+#define host1 "localhost"
+#define host2 "localhost"
+#define host3 "localhost"
+#define host4 "localhost"
+#define host5 "localhost"
+#define host6 "localhost"
+#define host7 "localhost"
+#define host8 "localhost"
+#define host9 "localhost"
 #define masterhist "hpboot2"
-#define slave "mandelslave"
+#define slave "/home/merzky/projects/appelmann/src/mandelslave"
 #define maxtids 16
 
 
 
 char hello[]=("Appelmann-Window.     (Press 'Q' to make me disappear ! :-)");
-char test[10]'
+char text[10];
 
 extern GC XCreateGC();
 char **ap;
@@ -75,10 +75,10 @@ Display *mydisp;
 GC mygc;
 
 int info,h,i,j,m,l,maxtid,maxtid2,maxtid3,atid,bufid,line,aline,msgtype;
-float z1,z2,c1,c2,x,y,ii,jj,dx,dy,bborder,xx1,xx2,xx,yy1,yy2,yy,test;
+float z1,z2,c1,c2,x,y,ii,jj,dx,dy,bborder,xx1,xx2,xx,yy1,yy2,yy;
 int tids[maxtids+10];
 int lines[maxy+1111];
-int maintid.maxtidd,kk,host;
+int maintid,maxtidd,kk,host;
 FILE *stream;
 
 int tid;
@@ -96,15 +96,15 @@ int fensterln(){
 
         mywin=XCreateSimpleWindow(mydisp,DefaultRootWindow(mydisp),myhint.x,myhint.y,myhint.width,myhint.height,5,myforegr,mybackgr);
         mypix=XCreatePixmap(mydisp,mywin,myhint.width,myhint.height,8);
-        XSetStandardProperties(mydisp,mywin,hello,hello,None,0,0,&,myhint);
+        XSetStandardProperties(mydisp,mywin,hello,hello,None,0,0,&myhint);
         
-        mycg=XCreateCG(mydisp,mywin,0,0);
-        mycg=XCreateCG(mydisp,mypix,0,0);
+        mygc=XCreateGC(mydisp,mywin,0,0);
+        mygc=XCreateGC(mydisp,mypix,0,0);
         XMapRaised(mydisp,mywin);
         XMoveWindow(mydisp,mywin,0,0);
 
-        XSetBackground(mydisp,mywin,mybackgr);
-        XSetForeground(mydisp,mywin,myforegr);
+        XSetBackground(mydisp,mygc,mybackgr);
+        XSetForeground(mydisp,mygc,myforegr);
 
         cmap=DefaultColormap(mydisp,DefaultScreen(mydisp));
 
@@ -175,23 +175,35 @@ int colorinit(){
 
 int produce(){
 
+    pvm_setopt(PvmDebugMask,0xFFFFF);
+
+    fprintf (stderr, "PvmBadParam : %d\n", PvmBadParam);
+    fprintf (stderr, "PvmNoHost   : %d\n", PvmNoHost  );
+    fprintf (stderr, "PvmNoFile   : %d\n", PvmNoFile  );
+    fprintf (stderr, "PvmNoMem    : %d\n", PvmNoMem   );
+    fprintf (stderr, "PvmSysErr   : %d\n", PvmSysErr  );
+    fprintf (stderr, "PvmOutOfRes : %d\n", PvmOutOfRes);
+
     maintid=pvm_mytid();
+    fprintf (stderr, "maintid: %d\n", maintid);
     maxtid2=maxtids/8;
     maxtid2=maxtid2*8;
     /*pvm_spawn("pvmgs", (char**)0, PvmMppFront,(char *)0, 1, &gstid);
     pvm_joingroup("producer_grp");
     */
 
+
     for(i=0;i<maxtid2;i+=8){
 
-        pvm_spawn(slave,(char**)0,1,host2,1,&tids[i]);
-        pvm_spawn(slave,(char**)0,1,host3,1,&tids[i+1]);
-        pvm_spawn(slave,(char**)0,1,host4,1,&tids[i+2]);
-        pvm_spawn(slave,(char**)0,1,host5,1,&tids[i+3]);
-        pvm_spawn(slave,(char**)0,1,host6,1,&tids[i+4]);
-        pvm_spawn(slave,(char**)0,1,host7,1,&tids[i+5]);
-        pvm_spawn(slave,(char**)0,1,host8,1,&tids[i+6]);
-        pvm_spawn(slave,(char**)0,1,host9,1,&tids[i+7]);
+        pvm_spawn(slave,(char**)0,0,host2,1,&tids[i]);
+        pvm_spawn(slave,(char**)0,0,host3,1,&tids[i+1]);
+        pvm_spawn(slave,(char**)0,0,host4,1,&tids[i+2]);
+        pvm_spawn(slave,(char**)0,0,host5,1,&tids[i+3]);
+        pvm_spawn(slave,(char**)0,0,host6,1,&tids[i+4]);
+        pvm_spawn(slave,(char**)0,0,host7,1,&tids[i+5]);
+        pvm_spawn(slave,(char**)0,0,host8,1,&tids[i+6]);
+        pvm_spawn(slave,(char**)0,PvmTaskDebug,host9,1,&tids[i+7]);
+        fprintf (stderr, "last spawn (%s): %d\n", host9, tids[i+7]);
         };
 
     return(1);
@@ -208,8 +220,8 @@ int initall(){
         yy2=y2;
         kk=k;
         bborder=border;
-        dx=(float)(xx1-xx2)/xx
-        dy=(float)(yy1-yy2)/yy
+        dx=(float)(xx1-xx2)/xx;
+        dy=(float)(yy1-yy2)/yy;
 
         for(i=0;i<maxy;i++){
                 lines[i+1]=i;
@@ -218,7 +230,7 @@ int initall(){
                 lines[i+1]=9999;
                 };
 
-        bufid=pvm_initsend(PvmDaatRaw);
+        bufid=pvm_initsend(PvmDataRaw);
 
         pvm_pkulong(&mywin, 1, 1);
         pvm_pkulong(&mypix, 1, 1);
@@ -271,11 +283,11 @@ main(argc,argv)
 
                 i++;
                 };
-        XCopyArea(mydisp,mywin,mygc,0,0,myhint.width,myhint.height,0,0);
+        XCopyArea(mydisp,mypix,mywin,mygc,0,0,myhint.width,myhint.height,0,0);
 
         XSelectInput(mydisp,mywin,KeyPressMask|ExposureMask);
         while(done==0){
-                XNextEvent(mydisp,myevent);
+                XNextEvent(mydisp,&myevent);
                 switch(myevent.type)
                         {
                         case Expose:
@@ -285,7 +297,7 @@ main(argc,argv)
                                         };
                                         break;
                         case KeyPress:
-                                i=XLookupString(&myevent,text,10,key,&mykey,0);
+                                i=XLookupString(&myevent,text,10,&mykey,0);
                                 if(i==1 &&text[0]=='Q')done=1;
                                 break;
                         };

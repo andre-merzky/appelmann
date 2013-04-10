@@ -1,21 +1,23 @@
 
 CC      = gcc
-CCFLAGS = -g -c
+CCFLAGS = -g -c -m64
 LD      = gcc
-LDFLAGS = -g -lpvm -lX11
+LDFLAGS = -g -m64 -lpvm3 -lX11 -ldl
 
 all: mandelmaster mandelslave
 
 mandelmaster.o: mandelmaster.c
-	$(CC) $(CCFLAGS) -o $@ $<
+	$(CC) -o $@ $< $(CCFLAGS)
 
 mandelslave.o: mandelslave.c
-	$(CC) $(CCFLAGS) -o $@ $<
+	$(CC) -o $@ $< $(CCFLAGS)
 
 mandelmaster: mandelmaster.o
-	$(LD) $(LDFLAGS) -o $@ $<
+	$(LD) -o $@ $< $(LDFLAGS)
 
 mandelslave:  mandelslave.o
-	$(LD) $(LDFLAGS) -o $@ $<
+	$(LD) -o $@ $< $(LDFLAGS)
 
+clean:
+	rm -f *.o mandelmaster mandelslave
 
