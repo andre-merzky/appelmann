@@ -22,17 +22,17 @@
 #define y1 0.35         /*0.315         1.2             -0.35           0.35*/
 #define y2 0.3          /*0.309         -2.2            -0.40           0.3*/
 
-#define host1 "localhost"
-#define host2 "localhost"
-#define host3 "localhost"
-#define host4 "localhost"
-#define host5 "localhost"
-#define host6 "localhost"
-#define host7 "localhost"
-#define host8 "localhost"
-#define host9 "localhost"
+#define host1 "hpcli51"
+#define host2 "hpcli52"
+#define host3 "hpcli53"
+#define host4 "hpcli51"
+#define host5 "hpcli52"
+#define host6 "hpcli53"
+#define host7 "hpcli51"
+#define host8 "hpcli52"
+#define host9 "hpcli53"
 #define masterhist "hpboot2"
-#define slave "/home/merzky/projects/appelmann/src/mandelslave"
+#define slave "mandelslave"
 #define maxtids 16
 
 
@@ -175,35 +175,23 @@ int colorinit(){
 
 int produce(){
 
-    pvm_setopt(PvmDebugMask,0xFFFFF);
-
-    fprintf (stderr, "PvmBadParam : %d\n", PvmBadParam);
-    fprintf (stderr, "PvmNoHost   : %d\n", PvmNoHost  );
-    fprintf (stderr, "PvmNoFile   : %d\n", PvmNoFile  );
-    fprintf (stderr, "PvmNoMem    : %d\n", PvmNoMem   );
-    fprintf (stderr, "PvmSysErr   : %d\n", PvmSysErr  );
-    fprintf (stderr, "PvmOutOfRes : %d\n", PvmOutOfRes);
-
     maintid=pvm_mytid();
-    fprintf (stderr, "maintid: %d\n", maintid);
     maxtid2=maxtids/8;
     maxtid2=maxtid2*8;
     /*pvm_spawn("pvmgs", (char**)0, PvmMppFront,(char *)0, 1, &gstid);
     pvm_joingroup("producer_grp");
     */
 
-
     for(i=0;i<maxtid2;i+=8){
 
-        pvm_spawn(slave,(char**)0,0,host2,1,&tids[i]);
-        pvm_spawn(slave,(char**)0,0,host3,1,&tids[i+1]);
-        pvm_spawn(slave,(char**)0,0,host4,1,&tids[i+2]);
-        pvm_spawn(slave,(char**)0,0,host5,1,&tids[i+3]);
-        pvm_spawn(slave,(char**)0,0,host6,1,&tids[i+4]);
-        pvm_spawn(slave,(char**)0,0,host7,1,&tids[i+5]);
-        pvm_spawn(slave,(char**)0,0,host8,1,&tids[i+6]);
-        pvm_spawn(slave,(char**)0,PvmTaskDebug,host9,1,&tids[i+7]);
-        fprintf (stderr, "last spawn (%s): %d\n", host9, tids[i+7]);
+        pvm_spawn(slave,(char**)0,1,host2,1,&tids[i]);
+        pvm_spawn(slave,(char**)0,1,host3,1,&tids[i+1]);
+        pvm_spawn(slave,(char**)0,1,host4,1,&tids[i+2]);
+        pvm_spawn(slave,(char**)0,1,host5,1,&tids[i+3]);
+        pvm_spawn(slave,(char**)0,1,host6,1,&tids[i+4]);
+        pvm_spawn(slave,(char**)0,1,host7,1,&tids[i+5]);
+        pvm_spawn(slave,(char**)0,1,host8,1,&tids[i+6]);
+        pvm_spawn(slave,(char**)0,1,host9,1,&tids[i+7]);
         };
 
     return(1);
